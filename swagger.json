@@ -8,7 +8,9 @@
     "/auth/register": {
       "post": {
         "summary": "Register user",
-        "tags": ["User Authentication"],
+        "tags": [
+          "User Authentication"
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -28,6 +30,14 @@
                     "type": "string",
                     "required": true,
                     "unique": true
+                  },
+                  "language": {
+                    "type": "string",
+                    "required": true
+                  },
+                  "region": {
+                    "type": "string",
+                    "required": true
                   },
                   "password": {
                     "type": "string",
@@ -78,6 +88,14 @@
                             },
                             "email": {
                               "type": "string"
+                            },
+                            "language": {
+                              "type": "string",
+                              "required": true
+                            },
+                            "region": {
+                              "type": "string",
+                              "required": true
                             },
                             "phone": {
                               "type": "string"
@@ -145,7 +163,9 @@
     "/auth/login": {
       "post": {
         "summary": "Login user",
-        "tags": ["User Authentication"],
+        "tags": [
+          "User Authentication"
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -200,6 +220,14 @@
                             },
                             "email": {
                               "type": "string"
+                            },
+                            "language": {
+                              "type": "string",
+                              "required": true
+                            },
+                            "region": {
+                              "type": "string",
+                              "required": true
                             },
                             "phone": {
                               "type": "string"
@@ -283,7 +311,9 @@
     "/auth/magic-link": {
       "post": {
         "summary": "Send magic link for authentication",
-        "tags": ["User Authentication"],
+        "tags": [
+          "User Authentication"
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -371,7 +401,9 @@
     "/blogs": {
       "get": {
         "summary": "Get all blogs",
-        "tags": ["Blogs"],
+        "tags": [
+          "Blogs"
+        ],
         "responses": {
           "200": {
             "description": "Successfully retrieved blogs",
@@ -432,7 +464,9 @@
       },
       "post": {
         "summary": "Create a new blog",
-        "tags": ["Blogs"],
+        "tags": [
+          "Blogs"
+        ],
         "security": [
           {
             "bearerAuth": []
@@ -534,7 +568,9 @@
     "/blogs/{id}": {
       "get": {
         "summary": "Get a blog by ID",
-        "tags": ["Blogs"],
+        "tags": [
+          "Blogs"
+        ],
         "parameters": [
           {
             "in": "path",
@@ -621,7 +657,9 @@
       },
       "patch": {
         "summary": "Update a blog by ID",
-        "tags": ["Blogs"],
+        "tags": [
+          "Blogs"
+        ],
         "security": [
           {
             "bearerAuth": []
@@ -769,7 +807,9 @@
       },
       "delete": {
         "summary": "Delete a blog by ID",
-        "tags": ["Blogs"],
+        "tags": [
+          "Blogs"
+        ],
         "security": [
           {
             "bearerAuth": []
@@ -888,10 +928,98 @@
         }
       }
     },
-    "/messages": {
+    "/contacts": {
+      "get": {
+        "summary": "Retrieve all contacts",
+        "tags": [
+          "Contacts"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved contacts",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "contacts": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "email": {
+                            "type": "string"
+                          },
+                          "phone": {
+                            "type": "string"
+                          },
+                          "description": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Unauthorized"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Internal Server Error"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
       "post": {
-        "summary": "Send a message",
-        "tags": ["Messages"],
+        "summary": "Create a new contact",
+        "tags": [
+          "Contacts"
+        ],
         "security": [
           {
             "bearerAuth": []
@@ -904,8 +1032,138 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "content": {
+                  "email": {
                     "type": "string"
+                  },
+                  "phone": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Contact created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "contact": {
+                      "$ref": "#/components/schemas/Contact"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Bad Request"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Unauthorized"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Internal Server Error"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/emails": {
+      "post": {
+        "summary": "Send a message",
+        "tags": [
+          "Emails"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "emailaddress": {
+                    "type": "string"
+                  },
+                  "senderId": {
+                    "type": "string"
+                  },
+                  "recipientId": {
+                    "type": "string"
+                  },
+                  "subject": {
+                    "type": "string"
+                  },
+                  "body": {
+                    "type": "string"
+                  },
+                  "createdAt": {
+                    "type": "date time"
                   }
                 }
               }
@@ -977,7 +1235,9 @@
       },
       "get": {
         "summary": "Get messages",
-        "tags": ["Messages"],
+        "tags": [
+          "Emails"
+        ],
         "security": [
           {
             "bearerAuth": []
@@ -1004,11 +1264,19 @@
                             "type": "string",
                             "example": "sjbxsjys7ssusuxjbsx6xsts"
                           },
-                          "content": {
+                          "recieverId": {
+                            "type": "string",
+                            "example": "sjbxdshdu6t6tt776bsx6xsts"
+                          },
+                          "subject": {
+                            "type": "string",
+                            "example": "How are you samuel"
+                          },
+                          "body": {
                             "type": "string",
                             "example": "Hello, samixx yasuke how are you?"
                           },
-                          "createdAt": {
+                          "sentAt": {
                             "type": "string",
                             "format": "date-time",
                             "example": "2024-07-12T12:00:00Z"
@@ -1064,10 +1332,110 @@
         }
       }
     },
+    "/notifications": {
+      "get": {
+        "summary": "Retrieve notifications",
+        "tags": [
+          "Notifications"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved notifications",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "notifications": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "userId": {
+                            "type": "string"
+                          },
+                          "message": {
+                            "type": "string"
+                          },
+                          "recipientId": {
+                            "type": "string"
+                          },
+                          "subject": {
+                            "type": "string"
+                          },
+                          "body": {
+                            "type": "string"
+                          },
+                          "createdAt": {
+                            "type": "string",
+                            "format": "date-time"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Unauthorized"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Internal Server Error"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/organisations": {
       "get": {
         "summary": "Get list of organisations",
-        "tags": ["Organisations"],
+        "tags": [
+          "Organisations"
+        ],
         "security": [
           {
             "bearerAuth": []
@@ -1154,7 +1522,9 @@
       },
       "post": {
         "summary": "Create a new organisation",
-        "tags": ["Organisations"],
+        "tags": [
+          "Organisations"
+        ],
         "security": [
           {
             "bearerAuth": []
@@ -1286,7 +1656,9 @@
     "/organisations/{id}": {
       "get": {
         "summary": "Get organisation by ID",
-        "tags": ["Organisations"],
+        "tags": [
+          "Organisations"
+        ],
         "security": [
           {
             "bearerAuth": []
@@ -1416,7 +1788,9 @@
       },
       "patch": {
         "summary": "Update organisation information",
-        "tags": ["Organisations"],
+        "tags": [
+          "Organisations"
+        ],
         "security": [
           {
             "bearerAuth": []
@@ -1564,7 +1938,9 @@
       },
       "delete": {
         "summary": "Delete organisation by ID",
-        "tags": ["Organisations"],
+        "tags": [
+          "Organisations"
+        ],
         "security": [
           {
             "bearerAuth": []
@@ -1692,7 +2068,9 @@
     "/payments": {
       "post": {
         "summary": "Create a payment",
-        "tags": ["Payments"],
+        "tags": [
+          "Payments"
+        ],
         "security": [
           {
             "bearerAuth": []
@@ -1865,7 +2243,9 @@
       },
       "get": {
         "summary": "Get list of payments",
-        "tags": ["Payments"],
+        "tags": [
+          "Payments"
+        ],
         "security": [
           {
             "bearerAuth": []
@@ -1987,7 +2367,9 @@
     "/profiles/{userId}": {
       "get": {
         "summary": "Get user profile",
-        "tags": ["Profiles"],
+        "tags": [
+          "Profiles"
+        ],
         "security": [
           {
             "bearerAuth": []
@@ -2141,7 +2523,9 @@
       },
       "patch": {
         "summary": "Update user profile",
-        "tags": ["Profiles"],
+        "tags": [
+          "Profiles"
+        ],
         "security": [
           {
             "bearerAuth": []
@@ -2323,7 +2707,9 @@
     "/settings": {
       "get": {
         "summary": "Get user settings",
-        "tags": ["Settings"],
+        "tags": [
+          "Settings"
+        ],
         "security": [
           {
             "bearerAuth": []
@@ -2424,7 +2810,9 @@
       },
       "patch": {
         "summary": "Update user settings",
-        "tags": ["Settings"],
+        "tags": [
+          "Settings"
+        ],
         "security": [
           {
             "bearerAuth": []
@@ -2547,10 +2935,12 @@
         }
       }
     },
-    "/users [protected route]": {
+    "/users": {
       "get": {
         "summary": "Get list of users",
-        "tags": ["Users"],
+        "tags": [
+          "Users"
+        ],
         "security": [
           {
             "bearerAuth": []
@@ -2651,7 +3041,9 @@
     "/users/{id}": {
       "get": {
         "summary": "Get user by ID",
-        "tags": ["Users"],
+        "tags": [
+          "Users"
+        ],
         "security": [
           {
             "bearerAuth": []
@@ -2778,7 +3170,9 @@
       },
       "patch": {
         "summary": "Update user details",
-        "tags": ["Users"],
+        "tags": [
+          "Users"
+        ],
         "security": [
           {
             "bearerAuth": []
@@ -2953,7 +3347,9 @@
       },
       "delete": {
         "summary": "Delete user by ID",
-        "tags": ["Users"],
+        "tags": [
+          "Users"
+        ],
         "security": [
           {
             "bearerAuth": []
@@ -3029,6 +3425,220 @@
                     "message": {
                       "type": "string",
                       "example": "User not found"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Internal Server Error"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/widgets": {
+      "get": {
+        "summary": "Retrieve all widgets",
+        "tags": [
+          "Widgets"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved widgets",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "Widgets": {
+                      "type": "array",
+                      "items": {
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "userId": {
+                            "type": "string"
+                          },
+                          "data": {
+                            "type": "string"
+                          },
+                          "createdAt": {
+                            "type": "date time"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Unauthorized"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Internal Server Error"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new widget",
+        "tags": [
+          "Widgets"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "userId": {
+                    "type": "string"
+                  },
+                  "data": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Widget created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "widget": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        },
+                        "userId": {
+                          "type": "string"
+                        },
+                        "data": {
+                          "type": "string"
+                        },
+                        "createdAt": {
+                          "type": "date time"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Bad Request"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Unauthorized"
                     }
                   }
                 }
